@@ -42,6 +42,24 @@ public class UserDaoImp implements UserDao{
         return userById;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public User getUserByUsername (String username) {
+        em = entityManager.createEntityManager();
+        transaction = em.getTransaction();
+        transaction.begin();
+        List <User> userByUsername = em.createQuery
+                        ("select u from User u where u.surname LIKE :username", User.class)
+                        .setParameter("username", username)
+                                .getResultList();
+        transaction.commit();
+        if (userByUsername.isEmpty()) {
+            return null;
+        } else {
+            return userByUsername.get(0);
+        }
+    }
+
     @Override
     @Transactional
     public void delete(int id) {

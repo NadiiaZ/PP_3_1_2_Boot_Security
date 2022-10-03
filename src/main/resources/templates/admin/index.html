@@ -17,9 +17,9 @@
                 <td th:text="${us.getId()}">ID</td>
                 <td th:text="${us.getName()}">NAME</td>
                 <td th:text="${us.getSurname()}">SURNAME</td>
-                <td><a th:href="@{/users/{id}(id = ${us.getId()})}">Info</a></td>
+                <td><a th:href="@{/admin/{id}(id = ${us.getId()})}">Info</a></td>
             </tr>
         </table>
-    <a th:href="@{users/new}">Add new user</a>
+<!--    <a th:href="@{users/new}">Add new user</a>-->
     </body>
 </html>

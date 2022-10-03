@@ -6,7 +6,7 @@
     <title>Add New User</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/users}" th:object="${user}">
+<form th:method="POST" th:action="@{/user}" th:object="${user}">
     <label for="name">First name:</label>
     <input type="text" th:field="*{name}" id="name"/>
     <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">ERROR</div>
