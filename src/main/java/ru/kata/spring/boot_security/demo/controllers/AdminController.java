@@ -1,11 +1,15 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.security.UserDetailsImp;
 import ru.kata.spring.boot_security.demo.servises.UserServiceImp;
 
 import javax.validation.Valid;
@@ -22,31 +26,61 @@ public class AdminController {
     }
 
     @GetMapping("")
-    public String index(Model model) {
+    public String index(Model model, @ModelAttribute("userForm") User userForm) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImp userDetails = (UserDetailsImp) auth.getPrincipal();
+        model.addAttribute("authUser", userDetails.getUser());
+
+        List<Role> roles = userService.getAllRoles();
+        model.addAttribute("roles",roles);
+
         List<User> users = userService.showAllUsers();
         model.addAttribute("user",users);
+
         return "admin/index";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
+        int idN = id;
         userService.deleteUser(id);
-        return "redirect:/admin/index";
+        return "redirect:/admin";
+    }
+    @PostMapping("/new")
+    public String addUser(@ModelAttribute ("userForm") @Valid User formUser,
+                          BindingResult bindingResult, Model model) {
+//        if(bindingResult.hasErrors()) {
+//            return "admin/index";
+//        }
+        if(!formUser.getPassword().equals(formUser.getPasswordConfirm())) {
+            model.addAttribute("passwordError", "Different passwords!");
+            return "admin/index";
+        }
+        userService.save(formUser);
+//        if(!userService.registerDefaultUser(formUser)) {
+//            model.addAttribute("usernameError",
+//                    "User with this email or password already exists");
+//            return "admin/index";
+//        }
+
+        return "redirect:/admin";
     }
 
-    @GetMapping("/{id}/edit")
-    public String edit(@PathVariable("id") int id, Model model) {
-        User userUpdated = userService.showUserById(id);
-        model.addAttribute("user", userUpdated);
-        return "/admin/edit";
-    }
-    @PatchMapping("/{id}")
-    public String update(@PathVariable("id") int id, @ModelAttribute("user") @Valid User user,
+//    @GetMapping("/edit")
+//    public String edit(@PathVariable("id") int id, Model model) {
+//        User userUpdated = userService.showUserById(id);
+//        model.addAttribute("user", userUpdated);
+//        return "/admin/edit";
+//    }
+    @PatchMapping ("/edit/{id}")
+    public String update(@PathVariable("id") int id, @ModelAttribute("userForm") @Valid User user,
                          BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "admin/edit";
-        }
-      //  userService.updateUser(id, user);
-        return "redirect:/admin/index";
+//        if (bindingResult.hasErrors()) {
+//            return "admin/edit";
+//        }
+        int i = id;
+        userService.updateUser(id, user);
+        return "redirect:/admin";
     }
 }
+   // @PathVariable("id") int id,

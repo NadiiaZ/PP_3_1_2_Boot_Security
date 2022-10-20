@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "id_role")
     )
 
-    private Set<Role> roles;
+    private Set<Role> userRoles;
 
     public String getPasswordConfirm() {
         return passwordConfirm;
@@ -56,10 +57,10 @@ public class User {
     }
 
     public void addNewRole(Role role) {
-        if (roles == null) {
-            roles = new HashSet<>();
+        if (userRoles == null) {
+            userRoles = new HashSet<>();
         }
-        roles.add(role);
+        userRoles.add(role);
     }
 
     public String getUsername() {
@@ -73,8 +74,8 @@ public class User {
     public User() {
 
     }
-    public Set<Role> getRoles() {
-        return roles;
+    public Set<Role> getUserRoles() {
+        return userRoles;
     }
 
     public String getPassword() {
@@ -92,8 +93,8 @@ public class User {
         this.password = password;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setUserRoles(Set<Role> roles) {
+        this.userRoles = roles;
     }
 
     public long getId() {
@@ -102,6 +103,10 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public String getStringRoles() {
+        return Arrays.toString(userRoles.toArray());
     }
 
     public void setName(String name) {

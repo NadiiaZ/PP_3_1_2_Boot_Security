@@ -1,9 +1,11 @@
 package ru.kata.spring.boot_security.demo.dao;
 
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Role;
+import ru.kata.spring.boot_security.demo.models.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,7 +23,7 @@ public class RoleDao {
         this.entityManager = entityManager;
     }
 
-    @Transactional (readOnly = true)
+    @Transactional(readOnly = true)
     public Role findRoleByName(String name) {
         em = entityManager.createEntityManager();
         transaction = em.getTransaction();
@@ -44,5 +46,14 @@ public class RoleDao {
         transaction.begin();
         em.persist(role);
         transaction.commit();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Role> getAllRoles() {
+        em = entityManager.createEntityManager();
+
+        Session session = em.unwrap(Session.class);
+        List<Role> roles = session.createQuery("from Role").getResultList();
+        return roles;
     }
 }

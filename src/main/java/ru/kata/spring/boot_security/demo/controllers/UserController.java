@@ -27,7 +27,7 @@ public class UserController {
     public String showUserById(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImp userDetails = (UserDetailsImp) auth.getPrincipal();
-        model.addAttribute("user", userDetails.getUser());
+        model.addAttribute("authUser", userDetails.getUser());
         return "user/user";
     }
 
@@ -37,7 +37,7 @@ public class UserController {
         UserDetailsImp userDetails = (UserDetailsImp) auth.getPrincipal();
 
         User userUpdated = userDetails.getUser();
-        model.addAttribute("user", userUpdated);
+        model.addAttribute("authUser", userUpdated);
         return "user/edit";
     }
 

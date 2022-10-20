@@ -27,7 +27,7 @@
             <input type="password" th:field="*{password}" id="password"/>
             <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">ERROR</div>
             </br>
-            <label for="passwordConfirm">Confirm assword:</label>
+            <label for="passwordConfirm">Confirm password:</label>
             <input type="password" th:field="*{passwordConfirm}" id="passwordConfirm"/>
             <div style="color:red" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}">ERROR</div>
             <div style="color:red" th:field="${passwordError}">ERROR</div>

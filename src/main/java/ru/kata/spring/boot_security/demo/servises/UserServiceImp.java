@@ -87,10 +87,19 @@ public class UserServiceImp implements UserService, UserDetailsService {
         Set<Role> roles = new HashSet<>();
         //Role roleUser = roleRepository.findRoleByRoleName("ROLE_USER");
         Role roleUser = roleDao.findRoleByName("ROLE_USER");
-        user.setRoles(Collections.singleton(roleUser));
+        user.setUserRoles(Collections.singleton(roleUser));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         //userRepository.save(user);
         userDao.save(user);
         return true;
+    }
+
+    @Override
+    public void save(User user) {
+        userDao.save(user);
+    }
+
+    public List <Role> getAllRoles() {
+        return roleDao.getAllRoles();
     }
 }

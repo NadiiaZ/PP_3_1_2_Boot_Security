@@ -22,7 +22,6 @@ public class Role implements GrantedAuthority {
         this.id = id;
         this.roleName = roleName;
     }
-
     public Role(String roleName) {
         this.roleName = roleName;
     }
@@ -47,4 +46,9 @@ public class Role implements GrantedAuthority {
     public String getAuthority() {
         return getRoleName();
     }
+
+//    @Override
+//    public String toString() {
+//        return roleName.substring(5, roleName.length());
+//    }
 }
