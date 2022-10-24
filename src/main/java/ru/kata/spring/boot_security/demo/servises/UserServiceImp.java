@@ -7,99 +7,88 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.RoleDao;
-import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.dao.UserDaoImp;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
+import ru.kata.spring.boot_security.demo.repositories.UsersRepository;
 import ru.kata.spring.boot_security.demo.security.UserDetailsImp;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
-//    private final UsersRepository userRepository;
-//    private final RoleRepository roleRepository;
-
-    private final RoleDao roleDao;
-    private final UserDao userDao;
-
+    private final UsersRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserDaoImp userDao;
 
     @Autowired
-    public UserServiceImp(//UsersRepository userRepository,
-                          //RoleRepository roleRepository,
-                          UserDaoImp userDao,
+    public UserServiceImp(UsersRepository userRepository,
+                          RoleRepository roleRepository,
                           PasswordEncoder passwordEncoder,
-                          RoleDao roleDao) {
-//        this.userRepository = userRepository;
-//        this.roleRepository = roleRepository;
-        this.userDao = userDao;
-        this.roleDao = roleDao;
+                          UserDaoImp userDao) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userDao = userDao;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //Optional <User> user = userRepository.findUsersByUsername(username);
-        User user = userDao.getUserByUsername(username);
-        if (user == null)
+        Optional<User> user = userRepository.findUserByUsername(username);
+        if (user.isEmpty())
             throw new UsernameNotFoundException("User not found!");
-        return new UserDetailsImp(user);
+        return new UserDetailsImp(user.get());
     }
 
     @Override
     public List<User> showAllUsers() {
-        return userDao.showAllUsers();
+        return userRepository.findAll();
     }
 
     @Override
     public User showUserById(int id) {
-        return userDao.getUserById(id);
+        return userRepository.getById(id);
     }
 
     @Override
     public void deleteUser(int id) {
-        userDao.delete(id);
+        userRepository.deleteById((int)id);
     }
 
     @Override
     public void updateUser(int id, User user) {
-       // User userDB  = userRepository.findById(id).get();
-        userDao.update(id, user);
+        user.setId(id);
+        userRepository.save(user);
     }
 
     @Transactional
     public boolean registerDefaultUser(User user) {
-        //Optional<User> userDB  = userRepository.findUsersByUsername(user.getUsername());
+        Optional<User> userDB  = userRepository.findUserByUsername(user.getUsername());
 
-//        if (!userDB.isEmpty()) {
-//            return false;
-//        }
-
-        if (userDao.getUserByUsername(user.getUsername()) != null) {
+        if (!userDB.isEmpty()) {
             return false;
         }
 
         Set<Role> roles = new HashSet<>();
-        //Role roleUser = roleRepository.findRoleByRoleName("ROLE_USER");
-        Role roleUser = roleDao.findRoleByName("ROLE_USER");
+        Role roleUser = roleRepository.findRoleByRoleName("ROLE_USER");
         user.setUserRoles(Collections.singleton(roleUser));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        //userRepository.save(user);
-        userDao.save(user);
+        userRepository.save(user);
         return true;
     }
 
     @Override
     public void save(User user) {
-        userDao.save(user);
+        userRepository.save(user);
     }
 
     public List <Role> getAllRoles() {
-        return roleDao.getAllRoles();
+        return roleRepository.findAll();
+    }
+
+    public Role findRoleById(int id) {
+        return roleRepository.findRoleById(id);
     }
 }

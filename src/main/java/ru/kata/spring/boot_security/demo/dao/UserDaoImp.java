@@ -4,12 +4,14 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserDaoImp implements UserDao{
@@ -73,7 +75,7 @@ public class UserDaoImp implements UserDao{
 
     @Override
     @Transactional
-    public void update(int id, User user) {
+    public void update(int id, User user, Set<Role> roles) {
         em = entityManager.createEntityManager();
         transaction = em.getTransaction();
         transaction.begin();
@@ -81,6 +83,8 @@ public class UserDaoImp implements UserDao{
         userUpdate.setName(user.getName());
         userUpdate.setSurname(user.getSurname());
         userUpdate.setEmail(user.getEmail());
+        if(!roles.isEmpty())
+            userUpdate.setUserRoles(roles);
         em.merge(userUpdate);
         transaction.commit();
     }

@@ -13,7 +13,9 @@ import ru.kata.spring.boot_security.demo.security.UserDetailsImp;
 import ru.kata.spring.boot_security.demo.servises.UserServiceImp;
 
 import javax.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -42,7 +44,6 @@ public class AdminController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        int idN = id;
         userService.deleteUser(id);
         return "redirect:/admin";
     }
@@ -66,21 +67,12 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-//    @GetMapping("/edit")
-//    public String edit(@PathVariable("id") int id, Model model) {
-//        User userUpdated = userService.showUserById(id);
-//        model.addAttribute("user", userUpdated);
-//        return "/admin/edit";
-//    }
     @PatchMapping ("/edit/{id}")
-    public String update(@PathVariable("id") int id, @ModelAttribute("userForm") @Valid User user,
-                         BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return "admin/edit";
-//        }
-        int i = id;
-        userService.updateUser(id, user);
+    public String update(@PathVariable("id") int id,
+                         @RequestParam(value = "rolesId", required = false) String rolesId,
+                         @ModelAttribute("userForm") User userUpdate) {
+
+        userService.updateUser(id, userUpdate);
         return "redirect:/admin";
     }
 }
-   // @PathVariable("id") int id,

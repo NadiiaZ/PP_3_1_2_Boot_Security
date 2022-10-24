@@ -1,41 +1,46 @@
 <div th:fragment="edit">
-  <div class="modal fade" th:id="'editModal' + ${us.getId()}" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
+  <div class="modal fade" th:id="${'editModal'+us.id}" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
-        <form th:method="PATCH" th:action="@{/admin/edit/{id}(id = ${us.getId()})}" th:object="${userForm}">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editModalTitle">Edit user</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalTitle">Edit user</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form th:method="PATCH" th:action="@{/admin/edit/{id}(id = ${us.getId()})}" th:object="${us}">
           <div class="modal-body">
             <div class="mb-2">
-              <label class="control-label font-weight-bold" for="idEdit">Id</label>
-              <input class="form-control form-control-range" type="text" name="id" th:value="${us.getId()}" id="idEdit" disabled="disabled"/>
+              <label class="control-label font-weight-bold" for="forId">Id</label>
+              <input class="form-control form-control-range" th:type="text" th:name="id" th:value="${us.getId()}" id="forId" disabled="disabled"/>
             </div>
             <div class="mb-2">
-              <label class="control-label font-weight-bold" for="nameEdit">First name</label>
-              <input class="form-control form-control-range" th:field="*{name}" type="text" id="nameEdit"/>
+              <label class="control-label font-weight-bold" for="forUsername">Username</label>
+              <input class="form-control form-control-range" th:type="text" id="forUsername" th:value="${us.getUsername()}" th:name="username"/>
             </div>
             <div class="mb-2">
-              <label class="control-label font-weight-bold" for="surnameEdit">Last name</label>
-              <input class="form-control form-control-range" th:field="*{surname}" type="text" id="surnameEdit"/>
+              <label class="control-label font-weight-bold" for="forName">First name</label>
+              <input class="form-control form-control-range" th:type="text" id="forName" th:value="${us.getName()}" th:name="name"/>
             </div>
             <div class="mb-2">
-              <label class="control-label font-weight-bold" for="emailEdit">Email</label>
-              <input class="form-control form-control-range" type="text" th:value="${us.getEmail()}" id="emailEdit"/>
+              <label class="control-label font-weight-bold" for="forSurname">Last name</label>
+              <input class="form-control form-control-range" th:name="surname" th:type="text" th:value="${us.getSurname()}" id="forSurname"/>
             </div>
             <div class="mb-2">
-              <label class="control-label font-weight-bold" for="passwordEdit">Password</label>
-              <input class="form-control form-control-range" type="password" id="passwordEdit"/>
+              <label class="control-label font-weight-bold" for="forEmail">Email</label>
+              <input class="form-control form-control-range" th:type="text" id="forEmail" th:value="${us.getEmail()}" th:name="email"/>
+            </div>
+            <div class="mb-2">
+              <label class="control-label font-weight-bold" for="forPassword">Password</label>
+              <input class="form-control form-control-range" type="password" id="forPassword" th:value="${us.getPassword()}" th:name="password"/>
             </div>
             <div class="form-group form-control-range mb-2">
-              <label class="control-label font-weight-bold" for="roleEdit">Role</label>
-              <select multiple class="form-control" id="roleEdit">
+              <label class="control-label font-weight-bold" for="forRole">Role</label>
+              <select multiple class="form-control" id="forRole" th:name="userRoles" required>
                 <option th:each="role : ${roles}"
                         th:value="${role.getId()}"
-                        th:text="${role.getRoleName()}">
+                        th:text="${role.getRoleName()}"
+                        th:selected="${us.getUserRoles()}">
                 </option>
               </select>
             </div>

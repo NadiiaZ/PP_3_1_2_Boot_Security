@@ -33,13 +33,10 @@ public class User {
     private String email;
     @Column(name="password")
     @NotEmpty
-    //@Size(min = 5, max = 30)
     private String password;
     @Transient
-    @NotEmpty
-    //@Size(min = 5, max = 30)
     private String passwordConfirm;
-    @ManyToMany (fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "id_user"),
@@ -97,7 +94,7 @@ public class User {
         this.userRoles = roles;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

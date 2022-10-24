@@ -31,28 +31,6 @@ public class UserController {
         return "user/user";
     }
 
-    @GetMapping("/edit")
-    public String edit(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImp userDetails = (UserDetailsImp) auth.getPrincipal();
-
-        User userUpdated = userDetails.getUser();
-        model.addAttribute("authUser", userUpdated);
-        return "user/edit";
-    }
-
-    @PatchMapping("/edit")
-    public String update(@ModelAttribute("user") @Valid User user,
-                         BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors("firstname")) {
-            return "user/edit";
-        }
-
-        userService.updateUser((int)user.getId(), user);
-        return "redirect:/user";
-    }
-
-
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
         userService.deleteUser(id);
