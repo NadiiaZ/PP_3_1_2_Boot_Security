@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +20,10 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AuthController {
     private final UserServiceImp userService;
-
+    private final PasswordEncoder passwordEncoder;
     @Autowired
-    public AuthController(UserServiceImp userService) {
+    public AuthController(UserServiceImp userService, PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         this.userService = userService;
     }
 
@@ -38,6 +40,8 @@ public class AuthController {
     @PostMapping("/registration")
     public String addNewUser(@ModelAttribute ("userForm") @Valid User formUser,
                              BindingResult bindingResult, Model model) {
+
+        formUser.setPassword(passwordEncoder.encode(formUser.getPassword()));
         if(bindingResult.hasErrors()) {
             return "auth/registration";
         }

@@ -13,5 +13,4 @@ public interface UserDao {
     void delete(int id);
     void update(int id, User user, Set<Role> roles);
     void save(User user);
-
 }
